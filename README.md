@@ -34,7 +34,9 @@ mkdir build && cd build
 cmake ..
 make
 ./Game
+```
 
+## Navigating Directories
 ## Gameplay
 
 - Control the snake's movement direction using the arrow keys.  
