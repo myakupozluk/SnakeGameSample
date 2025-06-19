@@ -28,8 +28,8 @@ This project is a simple snake game written using OpenGL, GLFW, and GLM. The gam
 ### Installation Steps
 
 ```bash
-git clone https://github.com/username/snake-game.git
-cd snake-game
+git clone https://github.com/myakupozluk/SnakeGameSample
+cd SnakeGameSample
 mkdir build && cd build
 cmake ..
 make
