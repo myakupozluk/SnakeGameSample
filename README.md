@@ -29,7 +29,7 @@ This project is a simple snake game written using OpenGL, GLFW, and GLM. The gam
 
 ```bash
 git clone https://github.com/myakupozluk/SnakeGameSample
-cd snake-game
+cd SnakeGameSample
 mkdir build && cd build
 cmake ..
 make
