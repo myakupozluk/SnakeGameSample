@@ -1,114 +1,71 @@
-#include"shaderprogram.hpp"
-#include<glad/glad.h>
-#include<fstream>
-#include<iostream>
-ShaderProgram::ShaderProgram()
-{
-    m_ProgramId =glCreateProgram();
-}
-ShaderProgram::~ShaderProgram()
-{
-    glDeleteProgram(m_ProgramId);
-}
-void ShaderProgram::link()
-{
-    glLinkProgram(m_ProgramId);
-    int isLinked;
-    char log[512];
-    glGetShaderiv(m_ProgramId,GL_LINK_STATUS,&isLinked);
+#include "shaderProgram.hpp"
+#include <glad/glad.h>
+#include <fstream>
+#include <iostream>
+#include <sstream>
 
-    if(!isLinked)
-    {
-        glGetProgramInfoLog(m_ProgramId,512,0,log);
-
-        std::cout<<"Program Linking Error:"<<std::endl<<log<<std::endl;
-    }
-
+ShaderProgram::ShaderProgram() {
+     programId = glCreateProgram();
 }
 
-void ShaderProgram::use()
-{
-    glUseProgram(m_ProgramId);
+ShaderProgram::~ShaderProgram() {
+     glDeleteProgram(programId);
 }
-void ShaderProgram::addUniform(const std::string& varName)
-{
-    m_UniformVars[varName] =   glGetUniformLocation(m_ProgramId,varName.c_str());
+;
+
+void ShaderProgram::link() {
+     glLinkProgram(programId);
 }
-void ShaderProgram::setFloat(const std::string& varName,float value)
-{
-    glUniform1f(m_UniformVars[varName],value);
+
+void ShaderProgram::use() {
+     glUseProgram(programId);
 }
-void ShaderProgram::setVec3(const std::string& varName,const glm::vec3& value)
-{
-    glUniform3f(m_UniformVars[varName],value.x,value.y,value.z);
+
+void ShaderProgram::addUniform(const std::string& uniformVariableName) {
+     uniformVariables[uniformVariableName] = glGetUniformLocation(programId, uniformVariableName.c_str());
 }
-void ShaderProgram::setVec4(const std::string& varName,const glm::vec4& value)
-{
-    glUniform4f(m_UniformVars[varName],value.r,value.g,value.b,value.a);
+
+void ShaderProgram::setFloat(const std::string& variableName, float value) {
+     glUniform1f(uniformVariables[variableName], value);
 }
-void ShaderProgram::attachShader(const char* fileName,unsigned int shaderType)
-{
-    unsigned int shaderId = glCreateShader(shaderType);
 
-    std::string sourceCode = getShaderFromFile(fileName);
-
-    const char* chSourceCode = &sourceCode[0];
-
-    glShaderSource(shaderId,1,&chSourceCode,0);
-
-    glCompileShader(shaderId);
-
-    int isCompiled;
-    char log[512];
-    glGetShaderiv(shaderId,GL_COMPILE_STATUS,&isCompiled);
-
-    if(!isCompiled)
-    {
-        glGetShaderInfoLog(shaderId,512,0,log);
-        std::string strType;
-        switch(shaderType)
-        {
-        case GL_VERTEX_SHADER:
-            strType="Vertex Shader";
-            break;
-        case GL_FRAGMENT_SHADER:
-            strType="Fragment Shader";
-            break;      
-        }
-        std::cout<<"Shader Type:"<<strType<<std::endl<<log<<std::endl;
-    }
-
-
-
-    glAttachShader(m_ProgramId,shaderId);
-
-    glDeleteShader(shaderId);
-
-
-
+void ShaderProgram::setVec3(const std::string &variableName, glm::vec3 value) {
+     glUniform3f(uniformVariables[variableName], value.x, value.y, value.z);
 }
-std::string ShaderProgram::getShaderFromFile(const char* fileName)
-{
-    std::ifstream file(fileName);
 
-    std::string data;
-
-    if(file.is_open())
-    {
-        
-        char readChar;
-
-        while((readChar=file.get())!=EOF)
-        {
-            data+=readChar;
-        }
-       
-        file.close();
-    }
-   
-
-
-    return data;
-
-
+void ShaderProgram::setVec4(const std::string &variableName, glm::vec4 value) {
+     glUniform4f(uniformVariables[variableName], value.r, value.g, value.b, value.a);
 }
+
+void ShaderProgram::attachShader(const char *fileName, unsigned int shaderType) {
+     unsigned int shaderId = glCreateShader(shaderType);
+     std::string sourceCode = getShaderFromFile(fileName);
+     const char* chSourceCode = &sourceCode[0];
+     glShaderSource(shaderId,1,&chSourceCode,0);
+     glCompileShader(shaderId);
+     int success;
+     glGetShaderiv(shaderId, GL_COMPILE_STATUS, &success);
+     if (!success) {
+          char infoLog[512];
+          glGetShaderInfoLog(shaderId, 512, NULL, infoLog);
+          std::cerr << "Shader compilation failed (" << fileName << "):\n" << infoLog << std::endl;
+     }
+     glAttachShader(programId,shaderId);
+     glDeleteShader(shaderId);
+}
+
+std::string ShaderProgram::getShaderFromFile(const char* fileName) {
+     std::ifstream file(fileName);
+     std::stringstream buffer;
+
+     if (!file.is_open()) {
+          std::cerr << "Failed to open shader file: " << fileName << std::endl;
+          return "";
+     }
+
+     buffer << file.rdbuf();
+     return buffer.str();
+}
+
+
+
