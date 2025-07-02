@@ -7,10 +7,9 @@ This project is a simple snake game written using OpenGL, GLFW, and GLM. The gam
 ## Contents
 
 - [Installation](#installation)
+- [Requirements](#requirements)
+- [Installation Steps](#installationsteps)
 - [Gameplay](#gameplay)
-- [Tasks](#tasks)
-- [Launch](#launch)
-- [CMake Configuration](#cmake-configuration)
 
 ---
 
